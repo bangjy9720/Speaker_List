@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseCsv, refreshSlot, renderIndex, renderSvg } from "../scripts/render.mjs";
+import { parseCsv, refreshSlot, renderIndex, renderSvg, TITLE_X } from "../scripts/render.mjs";
 
 test("CSV parser handles quotes and line breaks", () => {
   assert.deepEqual(parseCsv('a,"b,b"\r\n1,2\r\n'), [["a", "b,b"], ["1", "2"]]);
@@ -38,6 +38,7 @@ test("SVG auto-fits without ellipsis and emphasizes only selected columns", () =
   assert.equal(svg.includes("…"), false);
   assert.match(svg, /\.emphasis \{ font-weight: 700; \}/);
   assert.match(svg, /\.head \{ font-weight: 800; \}/);
+  assert.match(svg, new RegExp(`<text class="title" x="${TITLE_X}"`));
   assert.match(svg, /2026-08-04 00:00 KST/);
   assert.equal(svg.includes("판매 중"), false);
 });
