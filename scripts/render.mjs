@@ -4,11 +4,11 @@ import { fileURLToPath } from "node:url";
 export const SPREADSHEET_ID = "1vx8GieHULsCZdPFP9p-5fH4Kex5pzYZJdL9SwWa8Cqs";
 
 export const LISTS = {
-  "active.svg": { title: "액티브 스피커", gid: "0" },
-  "small-active.svg": { title: "액티브 스피커 · 소형", gid: "1357053470" },
-  "bookshelf.svg": { title: "패시브 스피커 · 북쉘프", gid: "57397418" },
-  "floorstanding.svg": { title: "패시브 스피커 · 톨보이", gid: "2131659748" },
-  "amp.svg": { title: "앰프", gid: "1689402700" },
+  "active.svg": { title: " 액티브 스피커", gid: "0" },
+  "small-active.svg": { title: " 액티브 스피커 · 소형", gid: "1357053470" },
+  "bookshelf.svg": { title: " 패시브 스피커 · 북쉘프", gid: "57397418" },
+  "floorstanding.svg": { title: " 패시브 스피커 · 톨보이", gid: "2131659748" },
+  "amp.svg": { title: " 앰프", gid: "1689402700" },
 };
 
 const VISIBLE_COLUMNS = [0, 1, 2, 3, 4];
