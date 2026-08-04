@@ -7,14 +7,14 @@ test("CSV parser handles quotes and line breaks", () => {
   assert.deepEqual(parseCsv('a,"b,b"\r\n1,2\r\n'), [["a", "b,b"], ["1", "2"]]);
 });
 
-test("refresh slots use 00:00 and 12:00 KST", () => {
-  assert.deepEqual(refreshSlot(new Date("2026-08-03T15:00:00.000Z"), "12h"), {
+test("12-hour mode keeps slot keys but labels the actual execution minute", () => {
+  assert.deepEqual(refreshSlot(new Date("2026-08-03T15:07:42.000Z"), "12h"), {
     key: "20260804-00",
-    label: "2026-08-04 00:00 KST",
+    label: "2026-08-04 00:07 KST",
   });
-  assert.deepEqual(refreshSlot(new Date("2026-08-04T03:00:00.000Z"), "12h"), {
+  assert.deepEqual(refreshSlot(new Date("2026-08-04T03:34:11.000Z"), "12h"), {
     key: "20260804-12",
-    label: "2026-08-04 12:00 KST",
+    label: "2026-08-04 12:34 KST",
   });
 });
 
