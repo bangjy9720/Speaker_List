@@ -4,11 +4,11 @@ import { fileURLToPath } from "node:url";
 export const SPREADSHEET_ID = "1vx8GieHULsCZdPFP9p-5fH4Kex5pzYZJdL9SwWa8Cqs";
 
 export const LISTS = {
-  "active.svg": { title: " 액티브 스피커", gid: "0" },
-  "small-active.svg": { title: " 액티브 스피커 · 소형", gid: "1357053470" },
-  "bookshelf.svg": { title: " 패시브 스피커 · 북쉘프", gid: "57397418" },
-  "floorstanding.svg": { title: " 패시브 스피커 · 톨보이", gid: "2131659748" },
-  "amp.svg": { title: " 앰프", gid: "1689402700" },
+  "active.svg": { title: "액티브 스피커", gid: "0" },
+  "small-active.svg": { title: "액티브 스피커 · 소형", gid: "1357053470" },
+  "bookshelf.svg": { title: "패시브 스피커 · 북쉘프", gid: "57397418" },
+  "floorstanding.svg": { title: "패시브 스피커 · 톨보이", gid: "2131659748" },
+  "amp.svg": { title: "앰프", gid: "1689402700" },
 };
 
 const VISIBLE_COLUMNS = [0, 1, 2, 3, 4];
@@ -18,6 +18,8 @@ const NORMAL_FONT_WEIGHT = 400;
 const EMPHASIZED_COLUMNS = new Set([0, 1, 4]);
 const HEADER_HEIGHT = 58;
 const TITLE_HEIGHT = 66;
+// 제목의 왼쪽 여백(px). 숫자를 키우면 제목이 오른쪽으로 이동합니다.
+export const TITLE_X = 14;
 const DEFAULT_REFRESH_MODE = "12h";
 
 export function escapeXml(value) {
@@ -172,7 +174,7 @@ export function renderSvg(config, rows, timestamp) {
     .foot { font-size: ${FONT_SIZE - 3}px; font-weight: ${NORMAL_FONT_WEIGHT}; fill: #555; }
   </style>
   <rect width="100%" height="100%" fill="#ffffff"/>
-  <text class="title" x="1" y="36">${escapeXml(config.title)}</text>
+  <text class="title" x="${TITLE_X}" y="36">${escapeXml(config.title)}</text>
   <text class="sub" x="${canvasWidth - 1}" y="36" text-anchor="end">Google Sheets 연동 · ${escapeXml(timestamp)} 기준</text>`;
 
   let y = TITLE_HEIGHT;
