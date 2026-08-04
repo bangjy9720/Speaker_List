@@ -1,7 +1,7 @@
 # Speaker List Image Renderer
 
 공개 Google Sheets의 스피커 추천목록을 SVG 이미지로 만드는 독립 실행용 저장소입니다.
-GitHub Actions가 매일 한국 시간 00:00와 12:00에 다섯 이미지를 다시 생성해 `docs/`에 커밋합니다.
+GitHub Actions가 매일 한국 시간 00:00와 12:00에 다섯 이미지를 다시 생성해 GitHub Pages에 배포합니다.
 
 ## 현재 운영 주소
 
