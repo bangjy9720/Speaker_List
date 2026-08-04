@@ -51,7 +51,11 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
+          # Re-run jobs에서도 이전 시도의 아티팩트와 겹치지 않도록 실행 시도별 이름을 사용합니다.
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: docs
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
