@@ -103,12 +103,13 @@ export function refreshSlot(date = new Date(), mode = process.env.REFRESH_MODE ?
   const hour = shifted.getUTCHours();
   const minute = shifted.getUTCMinutes();
   const two = (value) => String(value).padStart(2, "0");
+  const actualLabel = `${year}-${two(month + 1)}-${two(day)} ${two(hour)}:${two(minute)} KST`;
 
   // 테스트용 분 단위 모드입니다. GitHub Actions 예약 실행 자체는 최소 5분 간격입니다.
   if (mode === "minute") {
     return {
       key: `${year}${two(month + 1)}${two(day)}-${two(hour)}${two(minute)}`,
-      label: `${year}-${two(month + 1)}-${two(day)} ${two(hour)}:${two(minute)} KST`,
+      label: actualLabel,
     };
   }
 
@@ -119,7 +120,7 @@ export function refreshSlot(date = new Date(), mode = process.env.REFRESH_MODE ?
   const slotHour = hour < 12 ? 0 : 12;
   return {
     key: `${year}${two(month + 1)}${two(day)}-${two(slotHour)}`,
-    label: `${year}-${two(month + 1)}-${two(day)} ${two(slotHour)}:00 KST`,
+    label: actualLabel,
   };
 }
 
