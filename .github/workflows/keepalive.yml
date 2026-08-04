@@ -1,0 +1,25 @@
+name: Keep scheduled workflows active
+
+on:
+  schedule:
+    # 공개 저장소의 예약 작업이 60일 무활동으로 비활성화되지 않도록 월 1회 기록합니다.
+    - cron: "17 16 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record repository activity
+        run: |
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/schedule-heartbeat.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/schedule-heartbeat.txt
+          git commit -m "Keep scheduled workflows active"
+          git push

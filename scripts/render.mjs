@@ -18,6 +18,7 @@ const NORMAL_FONT_WEIGHT = 400;
 const EMPHASIZED_COLUMNS = new Set([0, 1, 4]);
 const HEADER_HEIGHT = 58;
 const TITLE_HEIGHT = 66;
+const DEFAULT_REFRESH_MODE = "12h";
 
 export function escapeXml(value) {
   return String(value ?? "")
@@ -91,15 +92,29 @@ function activeRows(rows) {
   return output;
 }
 
-export function refreshSlot(date = new Date()) {
+export function refreshSlot(date = new Date(), mode = process.env.REFRESH_MODE ?? DEFAULT_REFRESH_MODE) {
   const kstOffsetMs = 9 * 60 * 60 * 1000;
   const shifted = new Date(date.getTime() + kstOffsetMs);
   const year = shifted.getUTCFullYear();
   const month = shifted.getUTCMonth();
   const day = shifted.getUTCDate();
   const hour = shifted.getUTCHours();
-  const slotHour = hour < 12 ? 0 : 12;
+  const minute = shifted.getUTCMinutes();
   const two = (value) => String(value).padStart(2, "0");
+
+  // 테스트용 분 단위 모드입니다. GitHub Actions 예약 실행 자체는 최소 5분 간격입니다.
+  if (mode === "minute") {
+    return {
+      key: `${year}${two(month + 1)}${two(day)}-${two(hour)}${two(minute)}`,
+      label: `${year}-${two(month + 1)}-${two(day)} ${two(hour)}:${two(minute)} KST`,
+    };
+  }
+
+  if (mode !== "12h") {
+    throw new Error(`지원하지 않는 REFRESH_MODE: ${mode}`);
+  }
+
+  const slotHour = hour < 12 ? 0 : 12;
   return {
     key: `${year}${two(month + 1)}${two(day)}-${two(slotHour)}`,
     label: `${year}-${two(month + 1)}-${two(day)} ${two(slotHour)}:00 KST`,

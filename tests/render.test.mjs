@@ -8,14 +8,25 @@ test("CSV parser handles quotes and line breaks", () => {
 });
 
 test("refresh slots use 00:00 and 12:00 KST", () => {
-  assert.deepEqual(refreshSlot(new Date("2026-08-03T15:00:00.000Z")), {
+  assert.deepEqual(refreshSlot(new Date("2026-08-03T15:00:00.000Z"), "12h"), {
     key: "20260804-00",
     label: "2026-08-04 00:00 KST",
   });
-  assert.deepEqual(refreshSlot(new Date("2026-08-04T03:00:00.000Z")), {
+  assert.deepEqual(refreshSlot(new Date("2026-08-04T03:00:00.000Z"), "12h"), {
     key: "20260804-12",
     label: "2026-08-04 12:00 KST",
   });
+});
+
+test("minute mode uses the current KST minute", () => {
+  assert.deepEqual(refreshSlot(new Date("2026-08-04T03:07:42.000Z"), "minute"), {
+    key: "20260804-1207",
+    label: "2026-08-04 12:07 KST",
+  });
+});
+
+test("unknown refresh modes are rejected", () => {
+  assert.throws(() => refreshSlot(new Date(), "hour"), /지원하지 않는 REFRESH_MODE/);
 });
 
 test("SVG auto-fits without ellipsis and emphasizes only selected columns", () => {
