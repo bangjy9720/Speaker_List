@@ -4,9 +4,9 @@ on:
   schedule:
     # 테스트 모드: GitHub Actions의 공식 최소 예약 간격은 5분입니다.
     # 아래 줄의 주석을 해제하고 운영 모드 줄을 주석 처리하세요.
-    # - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"
     # 운영 모드: 매일 00:00와 12:00 KST에 실행합니다.
-    - cron: "0 3,15 * * *"
+    # - cron: "0 3,15 * * *"
   workflow_dispatch:
   push:
     branches: [main]
@@ -24,7 +24,7 @@ permissions:
 env:
   # 테스트 모드에서는 "minute", 운영 모드에서는 "12h"를 사용합니다.
   # GitHub Actions 예약 실행은 1분 간격을 지원하지 않으므로 minute 모드도 최대 5분마다 실행됩니다.
-  REFRESH_MODE: "12h"
+  REFRESH_MODE: "minute"
 
 concurrency:
   group: speaker-list-render
