@@ -31,9 +31,9 @@ npm test
 npm run render
 ```
 
-## GitHub Pages 시험 주소
+## GitHub Pages 주소
 
-저장소의 **Settings → Pages**에서 `Deploy from a branch`, `main`, `/docs`를 선택하면 다음 주소로 시험할 수 있습니다.
+저장소의 **Settings → Pages → Build and deployment → Source**를 `GitHub Actions`로 한 번 설정해야 합니다. 이후 워크플로가 매일 두 차례 이미지를 생성하고 바로 GitHub Pages에 배포합니다.
 
 - `https://bangjy9720.github.io/Speaker_List/active.svg`
 - `https://bangjy9720.github.io/Speaker_List/small-active.svg`
@@ -41,4 +41,4 @@ npm run render
 - `https://bangjy9720.github.io/Speaker_List/floorstanding.svg`
 - `https://bangjy9720.github.io/Speaker_List/amp.svg`
 
-GitHub Pages 주소는 시험용이며 현재 디시 글에는 자동 반영되지 않습니다.
+GitHub Pages가 정상 배포된 것을 확인하기 전까지 현재 디시 글은 기존 `chatgpt.site` 주소를 유지합니다. 새 주소로의 전환은 자동으로 이루어지지 않습니다.
