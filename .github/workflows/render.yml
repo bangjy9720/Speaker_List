@@ -1,4 +1,4 @@
-name: Render speaker list images
+name: Render and deploy speaker list images
 
 on:
   schedule:
@@ -14,13 +14,18 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: speaker-list-render
   cancel-in-progress: false
 
 jobs:
-  render:
+  render-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -43,3 +48,12 @@ jobs:
           fi
           git commit -m "Update speaker list images"
           git push
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
