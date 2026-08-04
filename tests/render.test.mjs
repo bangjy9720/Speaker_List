@@ -28,6 +28,7 @@ test("SVG auto-fits without ellipsis and emphasizes only selected columns", () =
   assert.match(svg, /\.emphasis \{ font-weight: 700; \}/);
   assert.match(svg, /\.head \{ font-weight: 800; \}/);
   assert.match(svg, /2026-08-04 00:00 KST/);
+  assert.equal(svg.includes("판매 중"), false);
 });
 
 test("index includes all five image routes", () => {

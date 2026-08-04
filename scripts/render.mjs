@@ -11,8 +11,7 @@ export const LISTS = {
   "amp.svg": { title: "앰프", gid: "1689402700" },
 };
 
-const VISIBLE_COLUMNS = [0, 1, 2, 3, 4, 7];
-const DEFAULT_WIDTHS = [125, 200, 110, 215, 160, 300];
+const VISIBLE_COLUMNS = [0, 1, 2, 3, 4];
 const FONT_SIZE = 17;
 const FONT_WEIGHT = 700;
 const NORMAL_FONT_WEIGHT = 400;
