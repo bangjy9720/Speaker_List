@@ -1,7 +1,7 @@
 # Speaker List Image Renderer
 
 공개 Google Sheets의 스피커 추천목록을 SVG 이미지로 만드는 독립 실행용 저장소입니다.
-GitHub Actions가 매일 한국 시간 00:00와 12:00에 다섯 이미지를 다시 생성해 GitHub Pages에 배포합니다.
+GitHub Actions가 매일 한국 시간 05:37과 17:37에 다섯 이미지를 다시 생성해 GitHub Pages에 배포합니다.
 
 ## 현재 운영 주소
 
@@ -17,7 +17,8 @@ GitHub Actions가 매일 한국 시간 00:00와 12:00에 다섯 이미지를 다
 
 ## 자동 생성 규칙
 
-- 실행 시각: `0 3,15 * * *` UTC, 즉 한국 시간 00:00와 12:00
+- 실행 시각: `37 8,20 * * *` UTC, 즉 한국 시간 05:37과 17:37
+- 예약 분을 `:37`로 둔 이유: 정각·15분·30분·45분 및 5분 배수에 몰리는 예약을 피하기 위한 분산 설정
 - 원본 시트: `1vx8GieHULsCZdPFP9p-5fH4Kex5pzYZJdL9SwWa8Cqs`
 - 표시 열: 브랜드, 이름, 주요 사양, 현재 가격
 - 브랜드·이름·가격과 맨 윗행만 굵게 표시
@@ -32,7 +33,7 @@ GitHub Actions가 매일 한국 시간 00:00와 12:00에 다섯 이미지를 다
 
 ```yaml
 # - cron: "*/5 * * * *"
-- cron: "0 3,15 * * *"
+- cron: "37 8,20 * * *"
 REFRESH_MODE: "12h"
 ```
 
@@ -40,7 +41,7 @@ REFRESH_MODE: "12h"
 
 ```yaml
 - cron: "*/5 * * * *"
-# - cron: "0 3,15 * * *"
+# - cron: "37 8,20 * * *"
 REFRESH_MODE: "minute"
 ```
 
