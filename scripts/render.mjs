@@ -248,7 +248,7 @@ export function renderIndex(timestamp) {
   </head>
   <body><main>
     <h1>스피커 추천목록 이미지</h1>
-    <p>${escapeXml(timestamp)} 기준 · 매일 05:37과 17:37 KST에 자동 생성</p>
+    <p>${escapeXml(timestamp)} 기준 · 매일 00:00과 12:00 KST에 자동 생성</p>
       ${cards}
   </main></body>
 </html>`;
