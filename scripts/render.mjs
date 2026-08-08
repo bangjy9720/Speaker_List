@@ -18,6 +18,8 @@ const NORMAL_FONT_WEIGHT = 400;
 const EMPHASIZED_COLUMNS = new Set([0, 1, 4]);
 const HEADER_HEIGHT = 58;
 const TITLE_HEIGHT = 66;
+const FOOTER_WARNING_FONT_SIZE = FONT_SIZE - 3;
+const FOOTER_SYNC_FONT_SIZE = FONT_SIZE - 5;
 // 제목의 왼쪽 여백(px). 숫자를 키우면 제목이 오른쪽으로 이동합니다.
 export const TITLE_X = 14;
 const DEFAULT_REFRESH_MODE = "12h";
@@ -94,6 +96,16 @@ function activeRows(rows) {
   return output;
 }
 
+export function extractPriceCheckedDate(rows) {
+  for (const row of rows) {
+    const rowText = row.map((cell) => String(cell ?? "")).join(" ");
+    if (!rowText.includes("해당 열의 가격은")) continue;
+    const match = rowText.match(/\[(\d{4}-\d{2}-\d{2})\]/u);
+    if (match) return match[1];
+  }
+  throw new Error("시트 하단 안내문에서 가격 확인일을 찾을 수 없습니다.");
+}
+
 export function refreshSlot(date = new Date(), mode = process.env.REFRESH_MODE ?? DEFAULT_REFRESH_MODE) {
   const kstOffsetMs = 9 * 60 * 60 * 1000;
   const shifted = new Date(date.getTime() + kstOffsetMs);
@@ -157,10 +169,19 @@ function textCell(value, x, y, width, height, options = {}) {
 export function renderSvg(config, rows, timestamp) {
   const tableRows = activeRows(rows);
   if (tableRows.length < 2) throw new Error("표 데이터가 비어 있습니다.");
+  let priceCheckedDate;
+  try {
+    priceCheckedDate = extractPriceCheckedDate(rows);
+  } catch (error) {
+    // gid가 있는 실제 렌더링은 날짜 누락을 허용하지 않습니다. gid가 없는
+    // 단위 테스트용 설정만 기존 호출 형식과의 호환을 위해 실행일을 사용합니다.
+    if (config.gid) throw error;
+    priceCheckedDate = String(timestamp).slice(0, 10);
+  }
 
   const widths = autoFitWidths(tableRows, FONT_SIZE);
   const rowHeight = Math.max(42, 2 * (FONT_SIZE + 3) + 2);
-  const footerHeight = Math.max(36, FONT_SIZE + 19);
+  const footerHeight = 58;
   const canvasWidth = widths.reduce((sum, value) => sum + value, 0) + 2;
   const height = TITLE_HEIGHT + HEADER_HEIGHT + (tableRows.length - 1) * rowHeight + footerHeight + 2;
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
@@ -168,15 +189,16 @@ export function renderSvg(config, rows, timestamp) {
   <style>
     text { font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; fill: #171717; }
     .title { font-size: ${FONT_SIZE + 10}px; font-weight: 900; }
-    .sub { font-size: ${FONT_SIZE - 2}px; font-weight: ${NORMAL_FONT_WEIGHT}; fill: #555; }
+    .price-date { font-size: ${FONT_SIZE - 2}px; font-weight: 700; fill: #555; }
     .head { font-weight: 800; }
     .cell { font-weight: ${NORMAL_FONT_WEIGHT}; }
     .emphasis { font-weight: ${FONT_WEIGHT}; }
-    .foot { font-size: ${FONT_SIZE - 3}px; font-weight: ${NORMAL_FONT_WEIGHT}; fill: #555; }
+    .foot { font-size: ${FOOTER_WARNING_FONT_SIZE}px; font-weight: ${NORMAL_FONT_WEIGHT}; fill: #555; }
+    .sync { font-size: ${FOOTER_SYNC_FONT_SIZE}px; font-weight: ${NORMAL_FONT_WEIGHT}; fill: #777; }
   </style>
   <rect width="100%" height="100%" fill="#ffffff"/>
   <text class="title" x="${TITLE_X}" y="36">${escapeXml(config.title)}</text>
-  <text class="sub" x="${canvasWidth - 1}" y="36" text-anchor="end">Google Sheets 연동 · ${escapeXml(timestamp)} 기준</text>`;
+  <text class="price-date" x="${canvasWidth - 14}" y="36" text-anchor="end">가격 확인일 · ${escapeXml(priceCheckedDate)}</text>`;
 
   let y = TITLE_HEIGHT;
   let x = 1;
@@ -203,7 +225,8 @@ export function renderSvg(config, rows, timestamp) {
   }
 
   svg += `<rect x="1" y="${y}" width="${canvasWidth - 2}" height="${footerHeight}" fill="#f1f3f4" stroke="#9aa0a6"/>
-  <text class="foot" x="14" y="${y + Math.round(footerHeight / 2 + (FONT_SIZE - 3) * 0.34)}">가격은 참고용이며 최종 결제 전 구매자가 판매·재고·조건을 직접 확인해야 합니다.</text>
+  <text class="foot" x="14" y="${y + 23}">가격은 참고용이며 최종 결제 전 구매자가 판매·재고·조건을 직접 확인해야 합니다.</text>
+  <text class="sync" x="14" y="${y + 45}">Google Sheets 연동 시각 · ${escapeXml(timestamp)}</text>
 </svg>`;
   return svg;
 }
@@ -248,7 +271,7 @@ export function renderIndex(timestamp) {
   </head>
   <body><main>
     <h1>스피커 추천목록 이미지</h1>
-    <p>${escapeXml(timestamp)} 기준 · 매일 00:00과 12:00 KST에 자동 생성</p>
+    <p>${escapeXml(timestamp)} 기준 · 매일 00:00와 12:00 KST에 자동 생성</p>
       ${cards}
   </main></body>
 </html>`;
