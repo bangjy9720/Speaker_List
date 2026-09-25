@@ -91,9 +91,13 @@ function activeRows(rows) {
     const sourceRow = Array.from({ length: 8 }, (_, index) => source[index] ?? "");
     const isEmpty = sourceRow.every((cell) => !String(cell).trim());
     if (isEmpty && output.length > 1) break;
-    if (!isEmpty) output.push(VISIBLE_COLUMNS.map((index) => sourceRow[index]));
+    if (!isEmpty) output.push(sourceRow);
   }
   return output;
+}
+
+function isSoldOut(row) {
+  return /^\s*(?:일시\s*)?품절\s*(?:·|$)/u.test(String(row[7] ?? ""));
 }
 
 export function extractPriceCheckedDate(rows) {
@@ -169,6 +173,9 @@ function textCell(value, x, y, width, height, options = {}) {
 export function renderSvg(config, rows, timestamp) {
   const tableRows = activeRows(rows);
   if (tableRows.length < 2) throw new Error("표 데이터가 비어 있습니다.");
+  for (const row of tableRows.slice(1)) {
+    if (isSoldOut(row)) row[4] = `${row[4]}\n일시 품절`;
+  }
   let priceCheckedDate;
   try {
     priceCheckedDate = extractPriceCheckedDate(rows);
@@ -214,7 +221,7 @@ export function renderSvg(config, rows, timestamp) {
     x = 1;
     for (let column = 0; column < VISIBLE_COLUMNS.length; column += 1) {
       const width = widths[column];
-      const fill = column === 4 ? "#fff2cc" : rowIndex % 2 ? "#ffffff" : "#f8f9fa";
+      const fill = isSoldOut(tableRows[rowIndex]) ? "#f4cccc" : column === 4 ? "#fff2cc" : rowIndex % 2 ? "#ffffff" : "#f8f9fa";
       svg += `<rect x="${x}" y="${y}" width="${width}" height="${rowHeight}" fill="${fill}" stroke="#9aa0a6"/>`;
       svg += textCell(tableRows[rowIndex][column], x, y, width, rowHeight, {
         className: EMPHASIZED_COLUMNS.has(column) ? "emphasis" : "cell",

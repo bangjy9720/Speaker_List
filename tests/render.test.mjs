@@ -71,3 +71,20 @@ test("index includes all five image routes", () => {
     assert.match(html, new RegExp(name.replace(".", "\\.")));
   }
 });
+
+test("sold-out rows show price and status without exposing other notes or mutating source", () => {
+  const rows = [
+    ["브랜드", "이름", "우퍼", "크기", "가격", "역대가", "리뷰", "비고"],
+    ["Ascilab", "C6B", "6", "400 x 203 x 265", "₩1,395,000", "₩1,295,000", "Erin", "일시 품절 · 10/12 재입고 예정"],
+    ["Brand", "Available", "6", "400 x 203 x 265", "₩1,000,000", "", "", "품절 해제"],
+  ];
+  const before = structuredClone(rows);
+  const svg = renderSvg({ title: "북쉘프" }, rows, "2026-09-25 00:00 KST");
+  assert.match(svg, /₩1,395,000<\/tspan>/);
+  assert.match(svg, />일시 품절<\/tspan>/);
+  assert.equal((svg.match(/fill="#f4cccc"/g) ?? []).length, 5);
+  assert.equal((svg.match(/>일시 품절<\/tspan>/g) ?? []).length, 1);
+  assert.equal(svg.includes("10/12 재입고 예정"), false);
+  assert.equal(svg.includes("₩1,295,000"), false);
+  assert.deepEqual(rows, before);
+});
