@@ -21,7 +21,8 @@ env:
 
 concurrency:
   group: speaker-list-render
-  cancel-in-progress: false
+  # 최신 시트 스냅샷 요청이 이전 대기 작업에 막히지 않도록 교체합니다.
+  cancel-in-progress: true
 
 jobs:
   render-and-deploy:
