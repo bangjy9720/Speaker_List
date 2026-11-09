@@ -97,7 +97,9 @@ function activeRows(rows) {
 }
 
 function isSoldOut(row) {
-  return /^\s*(?:일시\s*)?품절\s*(?:·|$)/u.test(String(row[7] ?? ""));
+  return String(row[7] ?? "")
+    .split(/[·\r\n]/u)
+    .some((part) => /^(?:일시\s*)?품절$/u.test(part.trim()));
 }
 
 export function extractPriceCheckedDate(rows) {

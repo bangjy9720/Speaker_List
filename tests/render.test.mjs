@@ -88,3 +88,22 @@ test("sold-out rows show price and status without exposing other notes or mutati
   assert.equal(svg.includes("₩1,295,000"), false);
   assert.deepEqual(rows, before);
 });
+
+test("stock status renders regardless of its position among note items", () => {
+  for (const [note, soldOut] of [
+    ["카디오이드 · 일시 품절", true],
+    ["일시 품절 · 카디오이드", true],
+    ["카디오이드\n일시품절", true],
+    ["카디오이드 · 품절 해제", false],
+    ["", false],
+  ]) {
+    const rows = [
+      ["브랜드", "이름", "우퍼", "크기", "가격", "역대가", "리뷰", "비고"],
+      ["Ascilab", "C8C", "", "", "₩6,950,000", "", "", note],
+    ];
+    const svg = renderSvg({ title: "액티브" }, rows, "2026-11-09 12:00 KST");
+    assert.equal(/₩6,950,000<\/tspan><tspan[^>]*>일시 품절<\/tspan>/.test(svg), soldOut, note);
+    assert.equal((svg.match(/fill="#f4cccc"/g) ?? []).length, soldOut ? 5 : 0, note);
+    assert.equal(svg.includes("카디오이드"), false, note);
+  }
+});
